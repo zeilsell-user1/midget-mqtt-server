@@ -24,25 +24,58 @@
 #ifndef MQTT_SESSION_H
 #define MQTT_SESSION_H
 
-#include <memory>
+#include <memory>    // For std::shared_ptr, std::unique_ptr
+#include <stdexcept> // For std::runtime_error
+
+#ifdef ESP8266
+#include <lwip/ip.h>
+#include "espconn.h"
+#else
+#include "../test/ip_addr.h"
+#include "../test/ip4_addr.h"
+#include "../test/ip.h"
+#include "../test/espconn.h"
+#endif
 
 #include "defaults.h"
 #include "tcp_session.h"
 #include "mqtt_topic.h"
 #include "mqtt_message.h"
 
-class MqttSession
+// In the context of MQTT (Message Queuing Telemetry Transport), a "TCP session"
+// usually encompasses the entire lifespan of a MQTT connection, from its
+// establishment to its termination.
+class MqttSession : public std::enable_shared_from_this<MqttSession>
 {
 public:
-  MqttSession();
-  MqttSession(std::shared_ptr<TcpSession> tcpSession);
+  using MqttSessionPtr = std::shared_ptr<MqttSession>;
+  using SessionId = std::size_t;
+
+  // A drawback of using the RAII (Resource Acquisition Is Initialization) principle is that
+  // shared_ptr and unique_ptr both need to have access to the constructor and destructor for
+  // the class. Unfortunately this means they need to be public, which sucks. Please DO NOT
+  // call TcpSession directly, a session is created and managed by TcpServer
+
+  MqttSession() = default;
+  MqttSession(ip_addr_t ipAddress, unsigned short port);
+  ~MqttSession();
+
+  // In modern C++, it's generally recommended to follow the Rule of Three (or Rule of Five).
+  // Since you have a custom destructor in MqttSession, it's good practice to also define or
+  // delete the copy constructor, copy assignment operator, move constructor, and move
+  // assignment operator. Not technically needed, but added anyway as good proactice.
+
+  MqttSession(const MqttSession &) = default;
+  MqttSession &operator=(const MqttSession &) = default;
+  MqttSession(MqttSession &&) = default;
+  MqttSession &operator=(MqttSession &&) = default;
+
   void setSessionFalse();
   bool isSessionValid();
-  std::shared_ptr<TcpSession> getTcpSession();
+  MqttSessionPtr getMqttSession();
 
-  void handleTcpDisconnect(void *arg);
-  void handleTcpMessageSent(void *arg);
-  void handleTcpIncomingMessage(void *arg, char *pdata, unsigned short len);
+  void handleMqttIncomingMessage(void *arg, char *pdata, unsigned short len);
+  void handleMqttDisconnect(void *arg);
 
 private: // state machine for the MQTT session
   void WaitForConnect_HandleMsg(MqttMessage msg);

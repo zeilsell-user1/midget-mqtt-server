@@ -90,38 +90,16 @@
 #ifdef MQTT_DEBUG
 #define MQTT_INFO(format, ...)     \
     printf(format, ##__VA_ARGS__); \
-    printf("\n")
+    printf("\n"); fflush(stdout);
 #define MQTT_WARNING(format, ...)  \
     printf(format, ##__VA_ARGS__); \
-    printf("\n")
+    printf("\n"); fflush(stdout);
 #define MQTT_ERROR(format, ...)    \
     printf(format, ##__VA_ARGS__); \
-    printf("\n")
+    printf("\n"); fflush(stdout);
 #else
 #define MQTT_INFO(format, ...)
 #define MQTT_WARNING(format, ...)
 #define MQTT_ERROR(format, ...)
 #endif
 
-// TCP Server Configuraiton
-
-#ifndef MAX_TCP_SESSIONS
-#define MAX_TCP_SESSIONS 10
-#endif
-
-#define TCP_DEBUG 1
-#ifdef TCP_DEBUG
-#define TCP_INFO(format, ...)      \
-    printf(format, ##__VA_ARGS__); \
-    printf("\n")
-#define TCP_WARNING(format, ...)   \
-    printf(format, ##__VA_ARGS__); \
-    printf("\n")
-#define TCP_ERROR(format, ...)     \
-    printf(format, ##__VA_ARGS__); \
-    printf("\n")
-#else
-#define TCP_INFO(format, ...)
-#define TCP_WARNING(format, ...)
-#define TCP_ERROR(format, ...)
-#endif
