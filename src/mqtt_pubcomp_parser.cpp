@@ -39,12 +39,13 @@
 
 MqttPubcompParser::MqttPubcompParser() {}
 
-void MqttPubcompParser::parseMessage(const std::vector<unsigned char> &pubcompMessage)
+MqttMessageParser::ParseResult MqttPubcompParser::parseMessage(const std::vector<unsigned char> &pubcompMessage)
 {
     pubcompMessage_ = pubcompMessage;
     currentIndex_ = 0;
     parseFixedHeader();
     parseVariableHeader();
+    return ParseResult::Success;
 }
 
 void MqttPubcompParser::parseFixedHeader()

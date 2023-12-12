@@ -28,7 +28,7 @@ class MqttPubackParser : public MqttMessageParser
 {
 public:
     MqttPubackParser();
-    void parseMessage(const std::vector<unsigned char> &message);
+    ParseResult parseMessage(const std::vector<unsigned char> &message);
 
 private:
     void parseFixedHeader();

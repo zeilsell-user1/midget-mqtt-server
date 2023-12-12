@@ -37,12 +37,13 @@
 
 #include <vector>
 #include <string>
+#include "mqtt_message_parser.h"
 
-class MqttPublishParser
+class MqttPublishParser : public MqttMessageParser
 {
 public:
     MqttPublishParser();
-    void parseMessage(const std::vector<unsigned char> &message);
+    ParseResult parseMessage(const std::vector<unsigned char> &message);
 
 private:
     void parseFixedHeader();

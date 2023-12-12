@@ -28,7 +28,7 @@ class MqttDisconnectParser : public MqttMessageParser
 {
 public:
     MqttDisconnectParser();
-    void parseMessage(const std::vector<unsigned char> &message);
+    ParseResult parseMessage(const std::vector<unsigned char> &message);
 
 private:
     void parseFixedHeader();

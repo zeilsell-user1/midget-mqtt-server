@@ -40,13 +40,14 @@
 
 MqttUnsubscribeParser::MqttUnsubscribeParser() {}
 
-void MqttUnsubscribeParser::parseMessage(const std::vector<unsigned char> &unsubscribeMessage)
+MqttMessageParser::ParseResult MqttUnsubscribeParser::parseMessage(const std::vector<unsigned char> &unsubscribeMessage)
 {
     unsubscribeMessage_ = unsubscribeMessage;
     currentIndex_ = 0;
     parseFixedHeader();
     parseVariableHeader();
     parsePayload();
+    return ParseResult::Success;
 }
 
 void MqttUnsubscribeParser::parseFixedHeader()

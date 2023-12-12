@@ -20,6 +20,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *******************************************************************************/
+#ifdef NATIVE_BUILD
+#include "../test/mocks/tcp_server.h"
+#else
+#include "tcp_server.h"
+#endif
 
 #include "mqtt_server.h"
 
@@ -31,7 +36,7 @@
  ******************************************************************************
  */
 
-void tcpSessionConnectCb(void *obj, std::shared_ptr<TcpSession> tcpSession)
+void tcpSessionConnectCb(void *obj, TcpSession::TcpSessionPtr tcpSession)
 {
     MqttServer *mqttServer = static_cast<MqttServer *>(obj);
     mqttServer->handleTcpSessionConnect(tcpSession);
@@ -56,7 +61,7 @@ MqttServer::MqttServer()
     }
 }
 
-MqttServer::MqttServer(ip_addr_t ipAddress, unsigned short port) // client
+bool MqttServer::startMqttClient(ip_addr_t ipAddress, unsigned short port)
 {
     ipAddress_ = ipAddress;
     port_ = port;
@@ -64,15 +69,17 @@ MqttServer::MqttServer(ip_addr_t ipAddress, unsigned short port) // client
     TcpServer& tcpServer = TcpServer::getInstance();
     tcpServer.startTcpClient(ipAddress_, port_, tcpSessionConnectCb, (void *)this);
     
-    for (int i = 0; i < MAX_TCP_SESSIONS; i++)
-    {
-        sessionMapping_[i].mappingValid = false;
-        sessionMapping_[i].mqttSession = nullptr;
-        sessionMapping_[i].tcpSession = nullptr;
-    }
+    // for (int i = 0; i < MAX_TCP_SESSIONS; i++)
+    // {
+    //     sessionMapping_[i].mappingValid = false;
+    //     sessionMapping_[i].mqttSession = nullptr;
+    //     sessionMapping_[i].tcpSession = nullptr;
+    // }
+
+    return true;
 }
 
-MqttServer::MqttServer(unsigned short port) // server
+bool MqttServer::startMqttServer(unsigned short port) 
 {
     ip4_addr_set_any(&ipAddress_);
     port_ = port;
@@ -80,30 +87,32 @@ MqttServer::MqttServer(unsigned short port) // server
     TcpServer& tcpServer = TcpServer::getInstance();
     tcpServer.startTcpServer(port_, tcpSessionConnectCb, (void *)this);
     
-    for (int i = 0; i < MAX_TCP_SESSIONS; i++)
-    {
-        sessionMapping_[i].mappingValid = false;
-        sessionMapping_[i].mqttSession = nullptr;
-        sessionMapping_[i].tcpSession = nullptr;
-    }
+    // for (int i = 0; i < MAX_TCP_SESSIONS; i++)
+    // {
+    //     sessionMapping_[i].mappingValid = false;
+    //     sessionMapping_[i].mqttSession = nullptr;
+    //     sessionMapping_[i].tcpSession = nullptr;
+    // }
+
+    return true;
 }
 
 void MqttServer::handleTcpSessionConnect(std::shared_ptr<TcpSession> tcpSession)
 {
     int i = 0;
 
-    for (i = 0; i < MAX_TCP_SESSIONS; i++)
-    {
-        if (sessionMapping_[i].mappingValid == false)
-        {
-            break;
-        }
-    }
+    // for (i = 0; i < MAX_TCP_SESSIONS; i++)
+    // {
+    //     if (sessionMapping_[i].mappingValid == false)
+    //     {
+    //         break;
+    //     }
+    // }
 
-    if (i < MAX_TCP_SESSIONS)
-    {
-        sessionMapping_[i].tcpSession = tcpSession;
-        sessionMapping_[i].mqttSession = std::make_unique<MqttSession>(tcpSession);
-        sessionMapping_[i].mappingValid = true; 
-    }
+    // if (i < MAX_TCP_SESSIONS)
+    // {
+    //     sessionMapping_[i].tcpSession = tcpSession;
+    //     sessionMapping_[i].mqttSession = std::make_unique<MqttSession>(tcpSession);
+    //     sessionMapping_[i].mappingValid = true; 
+    // }
 }

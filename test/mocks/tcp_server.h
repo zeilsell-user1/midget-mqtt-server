@@ -21,32 +21,46 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
-#include <string>
-#include <vector>
-#include "mqtt_message_parser.h"
+#ifndef TCP_SERVER_H
+#define TCP_SERVER_H
 
-class MqttConnectParser : public MqttMessageParser
+#include <map>
+#include <cstdint>
+#include <memory>
+#include <variant>
+
+#include "../test/mocks/ip_addr.h"
+#include "../test/mocks/ip4_addr.h"
+#include "../test/mocks/ip.h"
+
+#include "defaults.h"
+#include "tcp_session.h"
+
+class TcpServer
 {
 public:
-    MqttConnectParser();
-    ParseResult parseMessage(const std::vector<unsigned char> &message);
+    static TcpServer &getInstance();
+    void cleanup();
+
+    bool startTcpServer(unsigned short port, void (*cb)(void *, TcpSession::TcpSessionPtr), void *obj);
+    bool startTcpClient(ip_addr_t ipAddress, unsigned short port, void (*cb)(void *, TcpSession::TcpSessionPtr), void *obj);
+    bool stopTcpServer();
+    bool stopTcpClient(ip_addr_t ipAddress);
+    void sessionConnected(void *arg);
+    void sessionDisconnected(TcpSession::SessionId sessionId);
+    std::size_t getSessionCount();
+    TcpSession::TcpSessionPtr getSession(TcpSession::SessionId sessionId);
+    void sessionDead(TcpSession::TcpSessionPtr);
+
+    TcpServer();
+    ~TcpServer();
 
 private:
-    void parseFixedHeader();
-    void parseVariableHeader();
-    void parsePayload();
-    int parseRemainingLength();
-    void parseProtocolName();
-    void parseProtocolLevel();
-    void parseConnectFlags();
-    void parseKeepAlive();
-
-private:
-    std::vector<unsigned char> connectMessage_;
-    int currentIndex_;
-    unsigned char fixedHeader_;
-    int remainingLength_;
-    unsigned char protocolLevel_;
-    unsigned char connectFlags_;
-    int keepAlive_;
+    static std::unique_ptr<TcpServer> instance_;
+    TcpServer(const TcpServer &) = delete;
+    TcpServer &operator=(const TcpServer &) = delete;
+    TcpServer(TcpServer &&) = delete;
+    TcpServer &operator=(TcpServer &&) = delete;
 };
+
+#endif // TCP_SERVER_H

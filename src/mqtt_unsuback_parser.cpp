@@ -39,12 +39,13 @@
 MqttUnsubackParser::MqttUnsubackParser() {}
 
 // Parse the UNSUBACK message
-void MqttUnsubackParser::parseMessage(const std::vector<unsigned char> &unsubackMessage)
+MqttMessageParser::ParseResult MqttUnsubackParser::parseMessage(const std::vector<unsigned char> &unsubackMessage)
 {
     unsubackMessage_ = unsubackMessage;
     currentIndex_ = 0;
     parseFixedHeader();
     parseVariableHeader();
+    return ParseResult::Success;
 }
 
 void MqttUnsubackParser::parseFixedHeader()

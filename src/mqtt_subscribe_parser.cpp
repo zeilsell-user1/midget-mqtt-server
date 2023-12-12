@@ -39,13 +39,14 @@
 
 MqttSubscribeParser::MqttSubscribeParser() {}
 
-void MqttSubscribeParser::parseMessage(const std::vector<unsigned char> &subscribeMessage)
+MqttMessageParser::ParseResult MqttSubscribeParser::parseMessage(const std::vector<unsigned char> &subscribeMessage)
 {
     subscribeMessage_ = subscribeMessage;
     currentIndex_ = 0;
     parseFixedHeader();
     parseVariableHeader();
     parsePayload();
+    return ParseResult::Success;
 }
 
 void MqttSubscribeParser::parseFixedHeader()

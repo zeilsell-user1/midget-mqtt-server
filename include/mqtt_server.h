@@ -26,24 +26,25 @@
 
 #include <memory>
 
-#ifdef ESP8266
-#include <lwip/ip.h>
+#ifdef NATIVE_BUILD
+#include "../test/mocks/ip_addr.h"
+#include "../test/mocks/ip4_addr.h"
+#include "../test/mocks/ip.h"
+#include "../test/mocks/tcp_session.h"
 #else
-#include "../test/test_mqtt_server/ip_addr.h"
-#include "../test/test_mqtt_server/ip4_addr.h"
-#include "../test/test_mqtt_server/ip.h"
+#include <lwip/ip.h>
+#include "tcp_session.h"
 #endif
 
-#include "tcp_server.h"
 #include "mqtt_session.h"
 
-// Message Queuing Telemetry Transport (MQTT) is a lightweight and open messaging protocol 
-// designed for small sensors and mobile devices with high-latency or unreliable networks. 
-// MQTT is often used in Internet of Things (IoT) scenarios and other applications where 
-// low bandwidth and high latency are common challenges. The protocol operates on a 
-// publish/subscribe model, where devices can publish messages to specific topics, and other 
-// devices can subscribe to receive messages from those topics.The MQTT Server can run as 
-// either the client or the server. It provides the managment of MQTT connections, 
+// Message Queuing Telemetry Transport (MQTT) is a lightweight and open messaging protocol
+// designed for small sensors and mobile devices with high-latency or unreliable networks.
+// MQTT is often used in Internet of Things (IoT) scenarios and other applications where
+// low bandwidth and high latency are common challenges. The protocol operates on a
+// publish/subscribe model, where devices can publish messages to specific topics, and other
+// devices can subscribe to receive messages from those topics.The MQTT Server can run as
+// either the client or the server. It provides the managment of MQTT connections,
 // processes the received incoming messages and executes the appropriate actions.
 class MqttServer
 {
@@ -69,25 +70,25 @@ public:
   MqttServer();
   ~MqttServer();
 
-  void handleTcpSessionConnect(std::shared_ptr<TcpSession> tcpSession);
+  void handleTcpSessionConnect(TcpSession::TcpSessionPtr tcpSession);
 
 private:
-    MqttServer(const MqttServer &) = delete;
-    MqttServer &operator=(const MqttServer &) = delete;
-    MqttServer(MqttServer &&) = delete;
-    MqttServer &operator=(MqttServer &&) = delete;
+  MqttServer(const MqttServer &) = delete;
+  MqttServer &operator=(const MqttServer &) = delete;
+  MqttServer(MqttServer &&) = delete;
+  MqttServer &operator=(MqttServer &&) = delete;
 
-    MqttSession::MqttSessionPtr createMqttSession(ip_addr_t ipAddress, unsigned short port);
-    bool addSession(MqttSession::SessionId sessionId, const MqttSession::MqttSessionPtr session);
-    void removeSession(MqttSession::SessionId sessionId);
-    void removeAllSessions();
-    MqttSession::MqttSessionPtr getSession(MqttSession::SessionId sessionId) const;
+  MqttSession::MqttSessionPtr createMqttSession(ip_addr_t ipAddress, unsigned short port);
+  bool addSession(MqttSession::SessionId sessionId, const MqttSession::MqttSessionPtr session);
+  void removeSession(MqttSession::SessionId sessionId);
+  void removeAllSessions();
+  MqttSession::MqttSessionPtr getSession(MqttSession::SessionId sessionId) const;
 
 private:
   struct MapSessions
   {
     bool mappingValid;
-    std::shared_ptr<TcpSession> tcpSession;
+    TcpSession::TcpSessionPtr tcpSession;
     std::unique_ptr<MqttSession> mqttSession;
   };
 

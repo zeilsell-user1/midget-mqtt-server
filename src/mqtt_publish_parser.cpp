@@ -40,13 +40,14 @@
 MqttPublishParser::MqttPublishParser() {}
 
 // Parse the PUBLISH message
-void MqttPublishParser::parseMessage(const std::vector<unsigned char> &publishMessage)
+MqttMessageParser::ParseResult MqttPublishParser::parseMessage(const std::vector<unsigned char> &publishMessage)
 {
     publishMessage_ = publishMessage;
     currentIndex_ = 0;
     parseFixedHeader();
     parseVariableHeader();
     parsePayload();
+    return ParseResult::Success;
 }
 
 void MqttPublishParser::parseFixedHeader()

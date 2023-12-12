@@ -20,33 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *******************************************************************************/
+#ifndef __MQTT_UTILITIES_H__
+#define __MQTT_UTILITIES_H__
 
-#include <string>
-#include <vector>
-#include "mqtt_message_parser.h"
-
-class MqttConnectParser : public MqttMessageParser
-{
-public:
-    MqttConnectParser();
-    ParseResult parseMessage(const std::vector<unsigned char> &message);
-
-private:
-    void parseFixedHeader();
-    void parseVariableHeader();
-    void parsePayload();
-    int parseRemainingLength();
-    void parseProtocolName();
-    void parseProtocolLevel();
-    void parseConnectFlags();
-    void parseKeepAlive();
-
-private:
-    std::vector<unsigned char> connectMessage_;
-    int currentIndex_;
-    unsigned char fixedHeader_;
-    int remainingLength_;
-    unsigned char protocolLevel_;
-    unsigned char connectFlags_;
-    int keepAlive_;
-};
+#endif // __MQTT_UTILITIES_H__

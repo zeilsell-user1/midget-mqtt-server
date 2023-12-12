@@ -21,50 +21,120 @@
  * THE SOFTWARE.
  *******************************************************************************/
 
-// int main() {
-//     // Example CONNACK message (replace this with the actual received bytes)
-//     std::vector<unsigned char> receivedConnackMessage = {0x20, 0x02, 0x01, 0x00};
+// int main()
+// {
+//     MqttConnackParser parser;
 
-//     MqttConnackParser connackParser(receivedConnackMessage);
-//     connackParser.parseConnackMessage();
+//     // Example: Invalid CONNACK
+//     std::vector<uint8_t> invalidConnack = {0x20, 0x02, 0x01, 0x02};
+//     MqttConnackParser::ParseResult result = parser.parse(invalidConnack);
 
-//     // Display parsed information
-//     std::cout << "Session Present: " << (connackParser.getSessionPresent() ? "true" : "false") << std::endl;
-//     std::cout << "CONNACK Return Code: " << static_cast<int>(connackParser.getConnackReturnCode()) << std::endl;
-
+//     switch (result)
+//     {
+//     case MqttConnackParser::ParseResult::Success:
+//         // Handle successful parse
+//         break;
+//     case MqttConnackParser::ParseResult::IncompleteData:
+//         // Handle incomplete data
+//         break;
+//     case MqttConnackParser::ParseResult::InvalidPacketType:
+//         // Handle invalid packet type
+//         break;
+//     case MqttConnackParser::ParseResult::InvalidRemainingLength:
+//         // Handle invalid remaining length
+//         break;
+//     case MqttConnackParser::ParseResult::InvalidFlags:
+//         // Handle invalid flags
+//         break;
+//     case MqttConnackParser::ParseResult::InvalidReturnCode:
+//         // Handle invalid return code
+//         break;
+//     }
 //     return 0;
 // }
 
+#include <type_traits>
 #include "mqtt_connack_parser.h"
 
 MqttConnackParser::MqttConnackParser() {}
 
-void MqttConnackParser::parseMessage(const std::vector<unsigned char> &connackMessage)
+MqttMessageParser::ParseResult MqttConnackParser::parseMessage(const std::vector<unsigned char> &connackMessage)
 {
+    MQTT_INFO("Entered MqttConnackParser");
+    MQTT_INFO("Received message length is %d", connackMessage.size());
     connackMessage_ = connackMessage;
     currentIndex_ = 0;
-    parseFixedHeader();
-    parseVariableHeader();
+    connackReturnCode_ = MqttConnackReturnCode::InvalidReturnCode;
+
+    if (parseFixedHeader() == false)
+    {
+        MQTT_WARNING("Failed to parse fixed header");
+        return ParseResult::InvalidMessageStructure;
+    }
+
+    // Check if there is enough data to match the remaining length
+    if ((remainingLength_) != connackMessage_.size() - currentIndex_)
+    {
+        MQTT_WARNING("Not enough data in the message to match remaining length");
+        return ParseResult::InvalidRemainingLength;
+    }
+
+    return parseVariableHeader();
 }
 
-void MqttConnackParser::parseFixedHeader()
+MqttConnackParser::MqttConnackReturnCode MqttConnackParser::getConnackReturnCode() const
 {
+    return connackReturnCode_;
+}
+
+bool MqttConnackParser::parseFixedHeader()
+{
+    MQTT_INFO("enter parseFixedHeader, currentIndex_ = %d", currentIndex_);
     // The first byte of the message is the fixed header
     fixedHeader_ = connackMessage_[currentIndex_++];
+    MQTT_INFO("*** fixedHeader_ = 0x%x", fixedHeader_);
+    MQTT_INFO("currentIndex_ = %d", currentIndex_);
+
+    if (fixedHeader_ != 0x20)
+    {
+        MQTT_WARNING("wrong value in the fixed header");
+        return false;
+    }
+
+    remainingLength_ = parseRemainingLength();
+    MQTT_INFO("remainingLength_ = %d", remainingLength_);
+    return true;
 }
 
-void MqttConnackParser::parseVariableHeader()
+MqttMessageParser::ParseResult MqttConnackParser::parseVariableHeader()
 {
-    // The next two bytes represent the remaining length
-    remainingLength_ = parseRemainingLength();
-
     // The next bytes are part of the variable header
-    parseSessionPresent();
-    parseConnackReturnCode();
+    if (!parseConnectAcknowledgeFlags())
+    {
+        MQTT_WARNING("Failed to parse connect acknowledge flags");
+        return ParseResult::InvalidMessageStructure;
+    }
+
+    if (!parseConnackReturnCode())
+    {
+        MQTT_WARNING("Failed to parse connack return code");
+        return ParseResult::InvalidReturnCode;
+    }
+
+    if (!parseProperties())
+    {
+        MQTT_WARNING("Failed to parse properties");
+        return ParseResult::InvalidMessageStructure;
+    }
+
+    return ParseResult::Success;
 }
 
 int MqttConnackParser::parseRemainingLength()
 {
+    MQTT_INFO("enter parseRemainingLength, currentIndex_ = %d", currentIndex_);
+    MQTT_INFO("*** reaminaing length byte in header = 0x%x", connackMessage_[currentIndex_]);
+
     int multiplier = 1;
     int value = 0;
     unsigned char byte;
@@ -76,15 +146,70 @@ int MqttConnackParser::parseRemainingLength()
         multiplier *= 128;
     } while ((byte & 128) != 0);
 
+    MQTT_INFO("leave parseRemainingLength, currentIndex_ = %d", currentIndex_);
     return value;
 }
 
-void MqttConnackParser::parseSessionPresent()
+bool MqttConnackParser::parseConnectAcknowledgeFlags()
 {
-    sessionPresent_ = (connackMessage_[currentIndex_++] & 0x01) != 0;
+    MQTT_INFO("enter parseConnectAcknowledgeFlags, currentIndex_ = %d", currentIndex_);
+    acknowledgeFlags_ = connackMessage_[currentIndex_++];
+    MQTT_INFO("*** acknowledgeFlags_ = 0x%x", acknowledgeFlags_);
+    MQTT_INFO("currentIndex_ = %d", currentIndex_);
+
+    if ((acknowledgeFlags_ & 0xFE) != 0x00)
+    {
+        MQTT_WARNING("Invalid acknowledge flags )x%x", acknowledgeFlags_);
+        return false;
+    }
+
+    sessionPresent_ = (acknowledgeFlags_ & 0x01);
+    return true;
 }
 
-void MqttConnackParser::parseConnackReturnCode()
+bool MqttConnackParser::parseConnackReturnCode()
 {
     connackReturnCode_ = static_cast<MqttConnackReturnCode>(connackMessage_[currentIndex_++]);
+
+    switch (connackReturnCode_)
+    {
+    case MqttConnackReturnCode::Success:
+    case MqttConnackReturnCode::UnspecifiedError:
+    case MqttConnackReturnCode::MalformedPacket:
+    case MqttConnackReturnCode::ProtocolError:
+    case MqttConnackReturnCode::ImplementationSpecificError:
+    case MqttConnackReturnCode::UnsupportedProtocolVersion:
+    case MqttConnackReturnCode::ClientIdentifierNotValid:
+    case MqttConnackReturnCode::BadUserNameOrPassword:
+    case MqttConnackReturnCode::NotAuthorized:
+    case MqttConnackReturnCode::ServerUnavailable:
+    case MqttConnackReturnCode::ServerBusy:
+    case MqttConnackReturnCode::Banned:
+    case MqttConnackReturnCode::BadAuthenticationMethod:
+    case MqttConnackReturnCode::TopicNameInvalid:
+    case MqttConnackReturnCode::PacketTooLarge:
+    case MqttConnackReturnCode::QuotaExceeded:
+    case MqttConnackReturnCode::PayloadFormatInvalid:
+    case MqttConnackReturnCode::RetainNotSupported:
+    case MqttConnackReturnCode::QosNotSupported:
+    case MqttConnackReturnCode::UseAnotherServer:
+    case MqttConnackReturnCode::ServerMoved:
+    case MqttConnackReturnCode::ConnectionRateExceeded:
+        MQTT_INFO("Valid connack return code: 0x%x", connackReturnCode_);
+        return true;
+
+    default:
+        MQTT_WARNING("Invalid connack return code: 0x%x", connackReturnCode_);
+        connackReturnCode_ = MqttConnackReturnCode::InvalidReturnCode;
+        return false;
+    }
+}
+
+bool MqttConnackParser::parseProperties()
+{
+
+    MQTT_INFO("enter parseProperties, currentIndex_ = %d", currentIndex_);
+
+    size_t index = currentIndex_;
+    return MqttMessageParser::parseProperties(connackMessage_, index);
 }

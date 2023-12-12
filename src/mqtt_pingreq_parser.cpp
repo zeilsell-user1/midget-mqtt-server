@@ -40,11 +40,12 @@
 MqttPingreqParser::MqttPingreqParser() {}
 
 // Parse the PINGREQ message
-void MqttPingreqParser::parseMessage(const std::vector<unsigned char> &pingreqMessage)
+MqttMessageParser::ParseResult  MqttPingreqParser::parseMessage(const std::vector<unsigned char> &pingreqMessage)
 {
     pingreqMessage_ = pingreqMessage;
     currentIndex_ = 0;
     parseFixedHeader();
+    return ParseResult::Success;
 }
 
 void MqttPingreqParser::parseFixedHeader()

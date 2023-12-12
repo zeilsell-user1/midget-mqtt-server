@@ -1,23 +1,23 @@
 /*******************************************************************************
  * Copyright (c) 2023 George Consultants Ltd.
  * richard.john.george.3@gmail.com
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a 
- * copy of this software and associated documentation files (the “Software”), 
- * to deal in the Software without restriction, including without limitation 
- * the rights to use, copy, modify, merge, publish, distribute, sublicense, 
- * and/or sell copies of the Software, and to permit persons to whom the 
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the “Software”),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in 
+ *
+ * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL 
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN 
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *******************************************************************************/
 
@@ -32,22 +32,28 @@
  ******************************************************************************
  */
 
-void sessionDisconnectCb(void *args, void *obj)
+void tcpMessageSentCb(void *obj, TcpSession::TcpSessionPtr tcpSession)
 {
     MqttSession *mqttSession = (MqttSession *)(obj);
-    mqttSession->handleTcpDisconnect(args);
+    mqttSession->handleTcpMessageSent(tcpSession);
 }
 
-void messageSentCb(void *args, void *obj)
+void tcpMessageReceivedCb(void *obj, char *pData, unsigned short len, TcpSession::TcpSessionPtr tcpSession)
 {
     MqttSession *mqttSession = (MqttSession *)(obj);
-    mqttSession->handleTcpMessageSent(args);
+    mqttSession->handleTcpIncomingMessage(tcpSession, pData, len);
 }
 
-void incomingMessageCb(void *args, char *pdata, unsigned short len, void *obj)
+void tcpDisconnectCb(void *obj, TcpSession::TcpSessionPtr tcpSession)
 {
     MqttSession *mqttSession = (MqttSession *)(obj);
-    mqttSession->handleTcpIncomingMessage(args, pdata, len);
+    mqttSession->handleTcpDisconnect(tcpSession);
+}
+
+void tcpReconnectCb(void *obj, signed char err, TcpSession::TcpSessionPtr tcpSession)
+{
+    MqttSession *mqttSession = (MqttSession *)(obj);
+    mqttSession->handleTcpReconnect(err, tcpSession);
 }
 
 /*
@@ -56,17 +62,23 @@ void incomingMessageCb(void *args, char *pdata, unsigned short len, void *obj)
  ******************************************************************************
  */
 
-MqttSession::MqttSession()
+MqttSession::MqttSession(TcpSession::TcpSessionPtr tcpSession)
 {
-}
+    tcpSession_ = tcpSession;
 
-MqttSession::MqttSession(std::shared_ptr<TcpSession> tcpSession)
-{
-    tcpSession = tcpSession;
-    tcpSession->registerSessionCbListener((void *)this);
-    tcpSession->registerSessionDisconnectCb(sessionDisconnectCb);
-    tcpSession->registerIncomingMessageCb(incomingMessageCb);
-    tcpSession->registerMessageSentCb(messageSentCb);
+    bool imrc = tcpSession->registerIncomingMessageCb(tcpMessageReceivedCb, (void *)this);
+    if (imrc)
+    {
+        bool msrc = tcpSession->registerMessageSentCb(tcpMessageSentCb, (void *)this);
+        if (msrc)
+        {
+            bool sdrc = tcpSession->registerSessionDisconnectedCb(tcpDisconnectCb, (void *)this);
+            if (sdrc)
+            {
+                bool srrc = tcpSession->registerSessionReconnectCb(tcpReconnectCb, (void *)this);
+            }
+        }
+    }
 }
 
 void MqttSession::setSessionFalse()
@@ -79,29 +91,26 @@ bool MqttSession::isSessionValid()
     return sessionValid_;
 }
 
-std::shared_ptr<TcpSession> MqttSession::getTcpSession()
-{
-    return tcpSession_;
-}
-
 /*
  * ****************************************************************************
  * Methods used to handle the events from the TCP session
  * ****************************************************************************
  */
 
-void MqttSession::handleTcpDisconnect(void *arg)
-{
-
-}
-
-void MqttSession::handleTcpMessageSent(void *arg)
+void MqttSession::handleTcpDisconnect(TcpSession::TcpSessionPtr tcpSession)
 {
 }
 
-void MqttSession::handleTcpIncomingMessage(void *arg, char *pdata, unsigned short len)
+void MqttSession::handleTcpReconnect(signed char err, TcpSession::TcpSessionPtr tcpSession)
 {
-    MqttMessageHandler::handleMessage((const unsigned char *)pdata, len);
+}
+
+void MqttSession::handleTcpMessageSent(TcpSession::TcpSessionPtr tcpSession)
+{
+}
+
+void MqttSession::handleTcpIncomingMessage(TcpSession::TcpSessionPtr tcpSession, char *pdata, unsigned short len)
+{
 }
 
 /*
@@ -119,10 +128,8 @@ void MqttSession::handleTcpIncomingMessage(void *arg, char *pdata, unsigned shor
 //     - If valid, transition to STATE_CONNECTED
 //     - If invalid, send a CONNACK with an appropriate return code and transition to STATE_DISCONNECTED
 
-
 void MqttSession::WaitForConnect_HandleMsg(MqttMessage msg)
 {
-
 }
 
 // State: STATE_CONNECTED
@@ -158,7 +165,6 @@ void MqttSession::WaitForConnect_HandleMsg(MqttMessage msg)
 
 void MqttSession::Connected_HandleMsg(MqttMessage msg)
 {
-
 }
 
 // State: STATE_WAIT_FOR_PUBREL
@@ -170,7 +176,6 @@ void MqttSession::Connected_HandleMsg(MqttMessage msg)
 
 void MqttSession::WaitForPubRel_HandleMsg(MqttMessage msg)
 {
-
 }
 
 // State: STATE_DISCONNECTED
@@ -187,21 +192,9 @@ void MqttSession::WaitForPubRel_HandleMsg(MqttMessage msg)
 //     Actions:
 //         - Close the connection and free any associated resources
 
-
 void MqttSession::Disconnected_HandleMsg(MqttMessage msg)
 {
-
 }
-
-
-
-
-
-
-
-
-
-
 
 // #include <espconn.h>
 // #include "mqtt_server.h"
@@ -254,7 +247,6 @@ void MqttSession::Disconnected_HandleMsg(MqttMessage msg)
 
 // 	mqttClientCon = (MQTT_ClientCon *)os_zalloc(sizeof(MQTT_ClientCon));
 // 	pespconn->reverse = mqttClientCon;
-
 
 // 	mqttClientCon->pCon = pespconn;
 
@@ -404,15 +396,6 @@ void MqttSession::Disconnected_HandleMsg(MqttMessage msg)
 
 // 	activate_next_client();
 // }
-
-
-
-
-
-
-
-
-
 
 // void MqttSession::recvTcpConnect( uint8_t msg_type, enum mqtt_connect_flag msg_conn_ret)
 // {
@@ -801,8 +784,8 @@ void MqttSession::Disconnected_HandleMsg(MqttMessage msg)
 
 // void MqttSession::print_topic(topic_entry *topic) const
 // {
-// 	MQTT_INFO( "MQTT: Client: %s Topic: \"%s\" QoS: %d\r\n", 
-// 	           topic->clientcon->connect_info.client_id, 
+// 	MQTT_INFO( "MQTT: Client: %s Topic: \"%s\" QoS: %d\r\n",
+// 	           topic->clientcon->connect_info.client_id,
 // 			   topic->topic,
 // 			   topic->qos );
 // 	return;
@@ -813,20 +796,20 @@ void MqttSession::Disconnected_HandleMsg(MqttMessage msg)
 // 	MQTT_ClientCon *clientcon = topic_e->clientcon;
 // 	uint16_t message_id = 0;
 
-// 	MQTT_INFO( "MQTT: Client: %s Topic: \"%s\" QoS: %d\r\n", 
-// 	           clientcon->connect_info.client_id, 
+// 	MQTT_INFO( "MQTT: Client: %s Topic: \"%s\" QoS: %d\r\n",
+// 	           clientcon->connect_info.client_id,
 // 	           topic_e->topic,
 // 			   topic_e->qos );
 
-// 	clientcon->mqtt_state.outbound_message = mqtt_msg_publish( &clientcon->mqtt_state.mqtt_connection, 
-// 	                                                            topic, 
-// 																data, 
-// 																data_len, 
-// 																topic_e->qos, 
-// 																0, 
+// 	clientcon->mqtt_state.outbound_message = mqtt_msg_publish( &clientcon->mqtt_state.mqtt_connection,
+// 	                                                            topic,
+// 																data,
+// 																data_len,
+// 																topic_e->qos,
+// 																0,
 // 															   &message_id );
 
-// 	if ( QUEUE_Puts( &clientcon->msgQueue, 
+// 	if ( QUEUE_Puts( &clientcon->msgQueue,
 // 	                  clientcon->mqtt_state.outbound_message->data,
 // 				      clientcon->mqtt_state.outbound_message->length ) == -1 )
 // 	{
@@ -841,18 +824,18 @@ void MqttSession::Disconnected_HandleMsg(MqttMessage msg)
 // 	MQTT_ClientCon *clientcon = (MQTT_ClientCon *)user_data;
 // 	uint16_t message_id = 0;
 
-// 	MQTT_INFO( "MQTT: Client: %s Topic: \"%s\" QoS: %d\r\n", 
-// 	           clientcon->connect_info.client_id, 
+// 	MQTT_INFO( "MQTT: Client: %s Topic: \"%s\" QoS: %d\r\n",
+// 	           clientcon->connect_info.client_id,
 // 			   entry->topic,
 // 			   entry->qos );
 
-// 	clientcon->mqtt_state.outbound_message = mqtt_msg_publish( &clientcon->mqtt_state.mqtt_connection, 
-// 	                                                            entry->topic, entry->data, 
+// 	clientcon->mqtt_state.outbound_message = mqtt_msg_publish( &clientcon->mqtt_state.mqtt_connection,
+// 	                                                            entry->topic, entry->data,
 // 																entry->data_len, entry->qos,
-// 						                                        1, 
+// 						                                        1,
 // 															   &message_id ); // RJG is message_id needed?
 
-// 	if ( QUEUE_Puts( &clientcon->msgQueue, 
+// 	if ( QUEUE_Puts( &clientcon->msgQueue,
 // 	                  clientcon->mqtt_state.outbound_message->data,
 // 				      clientcon->mqtt_state.outbound_message->length ) == -1 )
 // 	{

@@ -1,38 +1,116 @@
 [
     {
-        "command": "C:/msys64/ucrt64/bin/g++.exe -o .pio/build/native/src/mqtt_msg.o -c -std=c++23 -DPLATFORMIO=60111 -DDOCTEST_CONFIG_COLORS_NONE -Iinclude -Isrc -I.pio/libdeps/native/doctest/doctest -I.pio/libdeps/native/doctest src/mqtt_msg.cpp",
-        "directory": "C:/Users/richa/source/ev-midget/esp01-projects/mqtt server",
-        "file": "src/mqtt_msg.cpp",
-        "output": ".pio/build/native/src/mqtt_msg.o"
+        "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -o .pio\\build\\native\\src\\mqtt_connack_parser.o -c -std=c++23 -DPLATFORMIO=60111 -DDOCTEST_CONFIG_SUPER_FAST_ASSERTS -DNATIVE_BUILD -DDOCTEST_CONFIG_COLORS_NONE -Iinclude -Isrc -I.pio\\libdeps\\native\\doctest\\doctest -I.pio\\libdeps\\native\\doctest src\\mqtt_connack_parser.cpp",
+        "directory": "C:\\Users\\richa\\source\\midget-mqtt-server",
+        "file": "src\\mqtt_connack_parser.cpp",
+        "output": ".pio\\build\\native\\src\\mqtt_connack_parser.o"
     },
     {
-        "command": "C:/msys64/ucrt64/bin/g++.exe -o .pio/build/native/src/mqtt_server.o -c -std=c++23 -DPLATFORMIO=60111 -DDOCTEST_CONFIG_COLORS_NONE -Iinclude -Isrc -I.pio/libdeps/native/doctest/doctest -I.pio/libdeps/native/doctest src/mqtt_server.cpp",
-        "directory": "C:/Users/richa/source/ev-midget/esp01-projects/mqtt server",
-        "file": "src/mqtt_server.cpp",
-        "output": ".pio/build/native/src/mqtt_server.o"
+        "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -o .pio\\build\\native\\src\\mqtt_connect_parser.o -c -std=c++23 -DPLATFORMIO=60111 -DDOCTEST_CONFIG_SUPER_FAST_ASSERTS -DNATIVE_BUILD -DDOCTEST_CONFIG_COLORS_NONE -Iinclude -Isrc -I.pio\\libdeps\\native\\doctest\\doctest -I.pio\\libdeps\\native\\doctest src\\mqtt_connect_parser.cpp",
+        "directory": "C:\\Users\\richa\\source\\midget-mqtt-server",
+        "file": "src\\mqtt_connect_parser.cpp",
+        "output": ".pio\\build\\native\\src\\mqtt_connect_parser.o"
     },
     {
-        "command": "C:/msys64/ucrt64/bin/g++.exe -o .pio/build/native/src/mqtt_session.o -c -std=c++23 -DPLATFORMIO=60111 -DDOCTEST_CONFIG_COLORS_NONE -Iinclude -Isrc -I.pio/libdeps/native/doctest/doctest -I.pio/libdeps/native/doctest src/mqtt_session.cpp",
-        "directory": "C:/Users/richa/source/ev-midget/esp01-projects/mqtt server",
-        "file": "src/mqtt_session.cpp",
-        "output": ".pio/build/native/src/mqtt_session.o"
+        "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -o .pio\\build\\native\\src\\mqtt_disconnect_parser.o -c -std=c++23 -DPLATFORMIO=60111 -DDOCTEST_CONFIG_SUPER_FAST_ASSERTS -DNATIVE_BUILD -DDOCTEST_CONFIG_COLORS_NONE -Iinclude -Isrc -I.pio\\libdeps\\native\\doctest\\doctest -I.pio\\libdeps\\native\\doctest src\\mqtt_disconnect_parser.cpp",
+        "directory": "C:\\Users\\richa\\source\\midget-mqtt-server",
+        "file": "src\\mqtt_disconnect_parser.cpp",
+        "output": ".pio\\build\\native\\src\\mqtt_disconnect_parser.o"
     },
     {
-        "command": "C:/msys64/ucrt64/bin/g++.exe -o .pio/build/native/src/mqtt_topic.o -c -std=c++23 -DPLATFORMIO=60111 -DDOCTEST_CONFIG_COLORS_NONE -Iinclude -Isrc -I.pio/libdeps/native/doctest/doctest -I.pio/libdeps/native/doctest src/mqtt_topic.cpp",
-        "directory": "C:/Users/richa/source/ev-midget/esp01-projects/mqtt server",
-        "file": "src/mqtt_topic.cpp",
-        "output": ".pio/build/native/src/mqtt_topic.o"
+        "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -o .pio\\build\\native\\src\\mqtt_message.o -c -std=c++23 -DPLATFORMIO=60111 -DDOCTEST_CONFIG_SUPER_FAST_ASSERTS -DNATIVE_BUILD -DDOCTEST_CONFIG_COLORS_NONE -Iinclude -Isrc -I.pio\\libdeps\\native\\doctest\\doctest -I.pio\\libdeps\\native\\doctest src\\mqtt_message.cpp",
+        "directory": "C:\\Users\\richa\\source\\midget-mqtt-server",
+        "file": "src\\mqtt_message.cpp",
+        "output": ".pio\\build\\native\\src\\mqtt_message.o"
     },
     {
-        "command": "C:/msys64/ucrt64/bin/g++.exe -o .pio/build/native/src/tcp_server.o -c -std=c++23 -DPLATFORMIO=60111 -DDOCTEST_CONFIG_COLORS_NONE -Iinclude -Isrc -I.pio/libdeps/native/doctest/doctest -I.pio/libdeps/native/doctest src/tcp_server.cpp",
-        "directory": "C:/Users/richa/source/ev-midget/esp01-projects/mqtt server",
-        "file": "src/tcp_server.cpp",
-        "output": ".pio/build/native/src/tcp_server.o"
+        "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -o .pio\\build\\native\\src\\mqtt_message_handler.o -c -std=c++23 -DPLATFORMIO=60111 -DDOCTEST_CONFIG_SUPER_FAST_ASSERTS -DNATIVE_BUILD -DDOCTEST_CONFIG_COLORS_NONE -Iinclude -Isrc -I.pio\\libdeps\\native\\doctest\\doctest -I.pio\\libdeps\\native\\doctest src\\mqtt_message_handler.cpp",
+        "directory": "C:\\Users\\richa\\source\\midget-mqtt-server",
+        "file": "src\\mqtt_message_handler.cpp",
+        "output": ".pio\\build\\native\\src\\mqtt_message_handler.o"
     },
     {
-        "command": "C:/msys64/ucrt64/bin/g++.exe -o .pio/build/native/src/tcp_session.o -c -std=c++23 -DPLATFORMIO=60111 -DDOCTEST_CONFIG_COLORS_NONE -Iinclude -Isrc -I.pio/libdeps/native/doctest/doctest -I.pio/libdeps/native/doctest src/tcp_session.cpp",
-        "directory": "C:/Users/richa/source/ev-midget/esp01-projects/mqtt server",
-        "file": "src/tcp_session.cpp",
-        "output": ".pio/build/native/src/tcp_session.o"
+        "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -o .pio\\build\\native\\src\\mqtt_pingreq_parser.o -c -std=c++23 -DPLATFORMIO=60111 -DDOCTEST_CONFIG_SUPER_FAST_ASSERTS -DNATIVE_BUILD -DDOCTEST_CONFIG_COLORS_NONE -Iinclude -Isrc -I.pio\\libdeps\\native\\doctest\\doctest -I.pio\\libdeps\\native\\doctest src\\mqtt_pingreq_parser.cpp",
+        "directory": "C:\\Users\\richa\\source\\midget-mqtt-server",
+        "file": "src\\mqtt_pingreq_parser.cpp",
+        "output": ".pio\\build\\native\\src\\mqtt_pingreq_parser.o"
+    },
+    {
+        "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -o .pio\\build\\native\\src\\mqtt_pingresp_parser.o -c -std=c++23 -DPLATFORMIO=60111 -DDOCTEST_CONFIG_SUPER_FAST_ASSERTS -DNATIVE_BUILD -DDOCTEST_CONFIG_COLORS_NONE -Iinclude -Isrc -I.pio\\libdeps\\native\\doctest\\doctest -I.pio\\libdeps\\native\\doctest src\\mqtt_pingresp_parser.cpp",
+        "directory": "C:\\Users\\richa\\source\\midget-mqtt-server",
+        "file": "src\\mqtt_pingresp_parser.cpp",
+        "output": ".pio\\build\\native\\src\\mqtt_pingresp_parser.o"
+    },
+    {
+        "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -o .pio\\build\\native\\src\\mqtt_puback_parser.o -c -std=c++23 -DPLATFORMIO=60111 -DDOCTEST_CONFIG_SUPER_FAST_ASSERTS -DNATIVE_BUILD -DDOCTEST_CONFIG_COLORS_NONE -Iinclude -Isrc -I.pio\\libdeps\\native\\doctest\\doctest -I.pio\\libdeps\\native\\doctest src\\mqtt_puback_parser.cpp",
+        "directory": "C:\\Users\\richa\\source\\midget-mqtt-server",
+        "file": "src\\mqtt_puback_parser.cpp",
+        "output": ".pio\\build\\native\\src\\mqtt_puback_parser.o"
+    },
+    {
+        "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -o .pio\\build\\native\\src\\mqtt_pubcomp_parser.o -c -std=c++23 -DPLATFORMIO=60111 -DDOCTEST_CONFIG_SUPER_FAST_ASSERTS -DNATIVE_BUILD -DDOCTEST_CONFIG_COLORS_NONE -Iinclude -Isrc -I.pio\\libdeps\\native\\doctest\\doctest -I.pio\\libdeps\\native\\doctest src\\mqtt_pubcomp_parser.cpp",
+        "directory": "C:\\Users\\richa\\source\\midget-mqtt-server",
+        "file": "src\\mqtt_pubcomp_parser.cpp",
+        "output": ".pio\\build\\native\\src\\mqtt_pubcomp_parser.o"
+    },
+    {
+        "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -o .pio\\build\\native\\src\\mqtt_publish_parser.o -c -std=c++23 -DPLATFORMIO=60111 -DDOCTEST_CONFIG_SUPER_FAST_ASSERTS -DNATIVE_BUILD -DDOCTEST_CONFIG_COLORS_NONE -Iinclude -Isrc -I.pio\\libdeps\\native\\doctest\\doctest -I.pio\\libdeps\\native\\doctest src\\mqtt_publish_parser.cpp",
+        "directory": "C:\\Users\\richa\\source\\midget-mqtt-server",
+        "file": "src\\mqtt_publish_parser.cpp",
+        "output": ".pio\\build\\native\\src\\mqtt_publish_parser.o"
+    },
+    {
+        "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -o .pio\\build\\native\\src\\mqtt_pubrec_parser.o -c -std=c++23 -DPLATFORMIO=60111 -DDOCTEST_CONFIG_SUPER_FAST_ASSERTS -DNATIVE_BUILD -DDOCTEST_CONFIG_COLORS_NONE -Iinclude -Isrc -I.pio\\libdeps\\native\\doctest\\doctest -I.pio\\libdeps\\native\\doctest src\\mqtt_pubrec_parser.cpp",
+        "directory": "C:\\Users\\richa\\source\\midget-mqtt-server",
+        "file": "src\\mqtt_pubrec_parser.cpp",
+        "output": ".pio\\build\\native\\src\\mqtt_pubrec_parser.o"
+    },
+    {
+        "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -o .pio\\build\\native\\src\\mqtt_pubrel_parser.o -c -std=c++23 -DPLATFORMIO=60111 -DDOCTEST_CONFIG_SUPER_FAST_ASSERTS -DNATIVE_BUILD -DDOCTEST_CONFIG_COLORS_NONE -Iinclude -Isrc -I.pio\\libdeps\\native\\doctest\\doctest -I.pio\\libdeps\\native\\doctest src\\mqtt_pubrel_parser.cpp",
+        "directory": "C:\\Users\\richa\\source\\midget-mqtt-server",
+        "file": "src\\mqtt_pubrel_parser.cpp",
+        "output": ".pio\\build\\native\\src\\mqtt_pubrel_parser.o"
+    },
+    {
+        "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -o .pio\\build\\native\\src\\mqtt_server.o -c -std=c++23 -DPLATFORMIO=60111 -DDOCTEST_CONFIG_SUPER_FAST_ASSERTS -DNATIVE_BUILD -DDOCTEST_CONFIG_COLORS_NONE -Iinclude -Isrc -I.pio\\libdeps\\native\\doctest\\doctest -I.pio\\libdeps\\native\\doctest src\\mqtt_server.cpp",
+        "directory": "C:\\Users\\richa\\source\\midget-mqtt-server",
+        "file": "src\\mqtt_server.cpp",
+        "output": ".pio\\build\\native\\src\\mqtt_server.o"
+    },
+    {
+        "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -o .pio\\build\\native\\src\\mqtt_session.o -c -std=c++23 -DPLATFORMIO=60111 -DDOCTEST_CONFIG_SUPER_FAST_ASSERTS -DNATIVE_BUILD -DDOCTEST_CONFIG_COLORS_NONE -Iinclude -Isrc -I.pio\\libdeps\\native\\doctest\\doctest -I.pio\\libdeps\\native\\doctest src\\mqtt_session.cpp",
+        "directory": "C:\\Users\\richa\\source\\midget-mqtt-server",
+        "file": "src\\mqtt_session.cpp",
+        "output": ".pio\\build\\native\\src\\mqtt_session.o"
+    },
+    {
+        "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -o .pio\\build\\native\\src\\mqtt_suback_parser.o -c -std=c++23 -DPLATFORMIO=60111 -DDOCTEST_CONFIG_SUPER_FAST_ASSERTS -DNATIVE_BUILD -DDOCTEST_CONFIG_COLORS_NONE -Iinclude -Isrc -I.pio\\libdeps\\native\\doctest\\doctest -I.pio\\libdeps\\native\\doctest src\\mqtt_suback_parser.cpp",
+        "directory": "C:\\Users\\richa\\source\\midget-mqtt-server",
+        "file": "src\\mqtt_suback_parser.cpp",
+        "output": ".pio\\build\\native\\src\\mqtt_suback_parser.o"
+    },
+    {
+        "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -o .pio\\build\\native\\src\\mqtt_subscribe_parser.o -c -std=c++23 -DPLATFORMIO=60111 -DDOCTEST_CONFIG_SUPER_FAST_ASSERTS -DNATIVE_BUILD -DDOCTEST_CONFIG_COLORS_NONE -Iinclude -Isrc -I.pio\\libdeps\\native\\doctest\\doctest -I.pio\\libdeps\\native\\doctest src\\mqtt_subscribe_parser.cpp",
+        "directory": "C:\\Users\\richa\\source\\midget-mqtt-server",
+        "file": "src\\mqtt_subscribe_parser.cpp",
+        "output": ".pio\\build\\native\\src\\mqtt_subscribe_parser.o"
+    },
+    {
+        "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -o .pio\\build\\native\\src\\mqtt_topic.o -c -std=c++23 -DPLATFORMIO=60111 -DDOCTEST_CONFIG_SUPER_FAST_ASSERTS -DNATIVE_BUILD -DDOCTEST_CONFIG_COLORS_NONE -Iinclude -Isrc -I.pio\\libdeps\\native\\doctest\\doctest -I.pio\\libdeps\\native\\doctest src\\mqtt_topic.cpp",
+        "directory": "C:\\Users\\richa\\source\\midget-mqtt-server",
+        "file": "src\\mqtt_topic.cpp",
+        "output": ".pio\\build\\native\\src\\mqtt_topic.o"
+    },
+    {
+        "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -o .pio\\build\\native\\src\\mqtt_unsuback_parser.o -c -std=c++23 -DPLATFORMIO=60111 -DDOCTEST_CONFIG_SUPER_FAST_ASSERTS -DNATIVE_BUILD -DDOCTEST_CONFIG_COLORS_NONE -Iinclude -Isrc -I.pio\\libdeps\\native\\doctest\\doctest -I.pio\\libdeps\\native\\doctest src\\mqtt_unsuback_parser.cpp",
+        "directory": "C:\\Users\\richa\\source\\midget-mqtt-server",
+        "file": "src\\mqtt_unsuback_parser.cpp",
+        "output": ".pio\\build\\native\\src\\mqtt_unsuback_parser.o"
+    },
+    {
+        "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -o .pio\\build\\native\\src\\mqtt_unsubscribe_parser.o -c -std=c++23 -DPLATFORMIO=60111 -DDOCTEST_CONFIG_SUPER_FAST_ASSERTS -DNATIVE_BUILD -DDOCTEST_CONFIG_COLORS_NONE -Iinclude -Isrc -I.pio\\libdeps\\native\\doctest\\doctest -I.pio\\libdeps\\native\\doctest src\\mqtt_unsubscribe_parser.cpp",
+        "directory": "C:\\Users\\richa\\source\\midget-mqtt-server",
+        "file": "src\\mqtt_unsubscribe_parser.cpp",
+        "output": ".pio\\build\\native\\src\\mqtt_unsubscribe_parser.o"
     }
 ]

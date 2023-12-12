@@ -27,18 +27,17 @@
 #include <memory>    // For std::shared_ptr, std::unique_ptr
 #include <stdexcept> // For std::runtime_error
 
-#ifdef ESP8266
-#include <lwip/ip.h>
-#include "espconn.h"
+#ifdef NATIVE_BUILD
+#include "../test/mocks/ip_addr.h"
+#include "../test/mocks/ip4_addr.h"
+#include "../test/mocks/ip.h"
+#include "../test/mocks/tcp_session.h"
 #else
-#include "../test/ip_addr.h"
-#include "../test/ip4_addr.h"
-#include "../test/ip.h"
-#include "../test/espconn.h"
+#include <lwip/ip.h>
+#include "tcp_session.h"
 #endif
 
 #include "defaults.h"
-#include "tcp_session.h"
 #include "mqtt_topic.h"
 #include "mqtt_message.h"
 
@@ -57,8 +56,8 @@ public:
   // call TcpSession directly, a session is created and managed by TcpServer
 
   MqttSession() = default;
-  MqttSession(ip_addr_t ipAddress, unsigned short port);
-  ~MqttSession();
+  MqttSession(TcpSession::TcpSessionPtr tcpSession);
+  ~MqttSession() = default;
 
   // In modern C++, it's generally recommended to follow the Rule of Three (or Rule of Five).
   // Since you have a custom destructor in MqttSession, it's good practice to also define or
@@ -74,8 +73,10 @@ public:
   bool isSessionValid();
   MqttSessionPtr getMqttSession();
 
-  void handleMqttIncomingMessage(void *arg, char *pdata, unsigned short len);
-  void handleMqttDisconnect(void *arg);
+  void handleTcpDisconnect(TcpSession::TcpSessionPtr tcpSession);
+  void handleTcpReconnect(signed char err, TcpSession::TcpSessionPtr tcpSession);
+  void handleTcpMessageSent(TcpSession::TcpSessionPtr tcpSession);
+  void handleTcpIncomingMessage(TcpSession::TcpSessionPtr tcpSession, char *pdata, unsigned short len);
 
 private: // state machine for the MQTT session
   void WaitForConnect_HandleMsg(MqttMessage msg);
@@ -89,7 +90,7 @@ private: // utility methods
 
 private:
   bool sessionValid_;
-  std::shared_ptr<TcpSession> tcpSession_;
+  TcpSession::TcpSessionPtr tcpSession_;
   unsigned char will_qos_;
   int will_retain_;
   int clean_session_;

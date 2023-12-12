@@ -45,13 +45,14 @@
 MqttConnectParser::MqttConnectParser() {}
 
 // Parse the CONNECT message
-void MqttConnectParser::parseMessage(const std::vector<unsigned char> &connectMessage)
+MqttMessageParser::ParseResult MqttConnectParser::parseMessage(const std::vector<unsigned char> &connectMessage)
 {
     connectMessage_ = connectMessage;
     currentIndex_ = 0;
     parseFixedHeader();
     parseVariableHeader();
     parsePayload();
+    return ParseResult::Success;
 }
 
 void MqttConnectParser::parseFixedHeader()

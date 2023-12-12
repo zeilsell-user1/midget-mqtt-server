@@ -38,12 +38,13 @@
 
 MqttPubackParser::MqttPubackParser() {}
 
-void MqttPubackParser::parseMessage(const std::vector<unsigned char> &pubackMessage)
+MqttMessageParser::ParseResult MqttPubackParser::parseMessage(const std::vector<unsigned char> &pubackMessage)
 {
     pubackMessage_ = pubackMessage;
     currentIndex_ = 0;
     parseFixedHeader();
     parseVariableHeader();
+    return ParseResult::Success;
 }
 
 void MqttPubackParser::parseFixedHeader()
