@@ -60,8 +60,6 @@ MqttConnackParser::MqttConnackParser() {}
 
 MqttMessageParser::ParseResult MqttConnackParser::parseMessage(const std::vector<unsigned char> &connackMessage)
 {
-    MQTT_INFO("Entered MqttConnackParser");
-    MQTT_INFO("Received message length is %d", connackMessage.size());
     connackMessage_ = connackMessage;
     currentIndex_ = 0;
     connackReturnCode_ = MqttConnackReturnCode::InvalidReturnCode;
@@ -89,11 +87,8 @@ MqttConnackParser::MqttConnackReturnCode MqttConnackParser::getConnackReturnCode
 
 bool MqttConnackParser::parseFixedHeader()
 {
-    MQTT_INFO("enter parseFixedHeader, currentIndex_ = %d", currentIndex_);
     // The first byte of the message is the fixed header
     fixedHeader_ = connackMessage_[currentIndex_++];
-    MQTT_INFO("*** fixedHeader_ = 0x%x", fixedHeader_);
-    MQTT_INFO("currentIndex_ = %d", currentIndex_);
 
     if (fixedHeader_ != 0x20)
     {
@@ -102,7 +97,6 @@ bool MqttConnackParser::parseFixedHeader()
     }
 
     remainingLength_ = parseRemainingLength();
-    MQTT_INFO("remainingLength_ = %d", remainingLength_);
     return true;
 }
 
@@ -132,9 +126,6 @@ MqttMessageParser::ParseResult MqttConnackParser::parseVariableHeader()
 
 int MqttConnackParser::parseRemainingLength()
 {
-    MQTT_INFO("enter parseRemainingLength, currentIndex_ = %d", currentIndex_);
-    MQTT_INFO("*** reaminaing length byte in header = 0x%x", connackMessage_[currentIndex_]);
-
     int multiplier = 1;
     int value = 0;
     unsigned char byte;
@@ -146,16 +137,12 @@ int MqttConnackParser::parseRemainingLength()
         multiplier *= 128;
     } while ((byte & 128) != 0);
 
-    MQTT_INFO("leave parseRemainingLength, currentIndex_ = %d", currentIndex_);
     return value;
 }
 
 bool MqttConnackParser::parseConnectAcknowledgeFlags()
 {
-    MQTT_INFO("enter parseConnectAcknowledgeFlags, currentIndex_ = %d", currentIndex_);
     acknowledgeFlags_ = connackMessage_[currentIndex_++];
-    MQTT_INFO("*** acknowledgeFlags_ = 0x%x", acknowledgeFlags_);
-    MQTT_INFO("currentIndex_ = %d", currentIndex_);
 
     if ((acknowledgeFlags_ & 0xFE) != 0x00)
     {
@@ -195,7 +182,6 @@ bool MqttConnackParser::parseConnackReturnCode()
     case MqttConnackReturnCode::UseAnotherServer:
     case MqttConnackReturnCode::ServerMoved:
     case MqttConnackReturnCode::ConnectionRateExceeded:
-        MQTT_INFO("Valid connack return code: 0x%x", connackReturnCode_);
         return true;
 
     default:
@@ -207,9 +193,6 @@ bool MqttConnackParser::parseConnackReturnCode()
 
 bool MqttConnackParser::parseProperties()
 {
-
-    MQTT_INFO("enter parseProperties, currentIndex_ = %d", currentIndex_);
-
     size_t index = currentIndex_;
     return MqttMessageParser::parseProperties(connackMessage_, index);
 }
